@@ -1,0 +1,17 @@
+{
+  "name": "mqtt-source-sensors",
+  "config": {
+    "connector.class": "io.confluent.connect.mqtt.MqttSourceConnector",
+    "tasks.max": "1",
+    "kafka.topic": "mqtt.sensors.raw",
+    "mqtt.server.uri": "tcp://localhost:1883",
+    "mqtt.topics": "sensors/#",
+    "mqtt.qos": "0",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter.schemas.enable": "false",
+    "confluent.topic.bootstrap.servers": "localhost:9092",
+    "confluent.topic.replication.factor": "1"
+  }
+}
