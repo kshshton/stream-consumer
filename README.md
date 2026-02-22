@@ -54,7 +54,7 @@ sensor_stream -> threshold check -> alert_topic
 ### 4. Multiple Window Types (Kafka Streams)
 
 Examples:
-- `avg(temp)` over 5s window
+- average temperature over 5s window
 - average temperature over the last hour
 
 ### 5. Aggregations (Kafka / Kafka Streams)
