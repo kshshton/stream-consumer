@@ -19,6 +19,7 @@ repositories {
 def kafkaVersion = '3.7.0'
 
 dependencies {
+    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
     implementation "org.apache.kafka:kafka-streams:${kafkaVersion}"
     implementation 'org.slf4j:slf4j-simple:2.0.13'
 }
