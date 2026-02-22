@@ -16,16 +16,6 @@ class ConsumerService(
     @Volatile
     private var running = true
 
-    internal fun consumerProperties(): Properties =
-        Properties().apply {
-            put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
-            put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
-            put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
-            put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
-            put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-            put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
-        }
-
     fun start() {
         KafkaConsumer<String, String>(consumerProperties()).use { consumer ->
             val shutdownHook = Thread {
@@ -69,4 +59,14 @@ class ConsumerService(
             }
         }
     }
+
+    internal fun consumerProperties(): Properties =
+        Properties().apply {
+            put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
+            put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
+            put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
+            put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
+            put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+            put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
+        }
 }

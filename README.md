@@ -1,68 +1,112 @@
-# stream-consumer
+# stream-consumer - Telemetry Processing Plan
 
-Dockerized local stack for ingesting MQTT messages into Kafka via Kafka Connect.
+## Goal
 
-## Stack
+The goal of this system is to process telemetry data from sensors in real time, generate alerts, and store historical data for long-term analytics.
 
-- Kafka (`confluentinc/cp-kafka:7.6.0`)
-- Mosquitto (`eclipse-mosquitto:2`)
-- Kafka Connect (custom image with MQTT connector plugin)
+## Data Flow
 
-## Prerequisites
-
-- WSL2
-- Docker Desktop with WSL integration enabled
-- `curl`
-
-## Quick start (WSL2)
-
-1. Start services:
-
-```bash
-docker compose up -d --build
+```text
+sensors
+  ↓
+Kafka topic: telemetry_raw
+  ↓
+stream processing
+  ├─ alert_topic
+  ├─ realtime_metrics
+  └─ telemetry_clean
+          ↓
+      TimescaleDB
 ```
 
-2. Verify MQTT connector plugin:
+## Processing Features
 
-```bash
-curl http://localhost:8083/connector-plugins
+### 1. Sensor-Based Filtering (Kafka / Stream Processor)
+
+Reason:
+- reduce data volume
+- route events to different topics
+
+Example:
+
+```text
+telemetry_raw -> filter(engine sensors) -> engine_topic
 ```
 
-Expected plugin class:
-`io.confluent.connect.mqtt.MqttSourceConnector`
+### 2. Unit Conversion (Kafka)
 
-3. Register connector:
+Conversion examples:
+- Fahrenheit -> Celsius
+- psi -> bar
 
-```bash
-curl -X POST http://localhost:8083/connectors \
-  -H "Content-Type: application/json" \
-  --data-binary "@connect/mqtt-source-sensors.docker.json"
+### 3. Anomaly Detection (Kafka, fixed threshold)
+
+Why:
+- must run in real time
+- generates alerts immediately
+
+Example:
+
+```text
+sensor_stream -> threshold check -> alert_topic
 ```
 
-4. Publish test MQTT message:
+### 4. Multiple Window Types (Kafka Streams)
 
-```bash
-docker exec mosquitto mosquitto_pub -h localhost -t sensors/temp -m "22.5"
+Examples:
+- `avg(temp)` over 5s window
+- average temperature over the last hour
+
+### 5. Aggregations (Kafka / Kafka Streams)
+
+Examples:
+- max temperature over the last 10s
+- min temperature over the last 10s
+- average RPM over 1 minute
+
+### 6. Platform Optimization (Kafka)
+
+Scope:
+- partitioning per sensor
+- replication
+- exactly-once semantics
+- event time vs processing time
+
+## Historical and Analytics Layer (TimescaleDB)
+
+### 1. Historical Data After Sensors Go Offline
+
+TimescaleDB stores data long term and supports more complex queries, for example:
+
+```sql
+SELECT avg(temp)
+FROM telemetry
+WHERE sensor_id = 10
+  AND time > now() - interval '7 days';
 ```
 
-5. Consume from Kafka:
+### 2. Retention (Kafka / TimescaleDB)
 
-```bash
-docker exec -it kafka kafka-console-consumer \
-  --bootstrap-server kafka:29092 \
-  --topic mqtt.sensors.raw \
-  --from-beginning
-```
+Strategy:
+- Kafka: 7 days (or another short operational window)
+- TimescaleDB: months / years
 
-## Useful checks
+### 3. Long-Term Aggregations (TimescaleDB)
 
-```bash
-curl http://localhost:8083/connectors/mqtt-source-sensors/status
-docker logs connect --tail 100
-```
+Examples:
+- average temperature per hour
+- average temperature per day
+- trend analysis using continuous aggregates
 
-## Notes
+## Architecture Summary
 
-- Use `connect/mqtt-source-sensors.docker.json` when Connect runs in Docker (uses `mosquitto:1883`).
-- Use `connect/mqtt-source-sensors.json` when Connect runs outside Docker (uses `localhost:1883`).
-- More context: `docs/mqtt-kafka-connect.md`.
+Kafka and Kafka Streams handle the real-time layer:
+- filtering
+- conversions
+- anomaly detection
+- windowed aggregations
+
+TimescaleDB handles the historical layer:
+- long-term storage
+- advanced analytical queries
+- long-horizon aggregations and trends
