@@ -39,13 +39,7 @@ curl -X POST http://localhost:8083/connectors \
   --data-binary "@connect/mqtt-source-sensors.docker.json"
 ```
 
-4. Publish test MQTT message:
-
-```bash
-docker exec mosquitto mosquitto_pub -h localhost -t sensors/temp -m "22.5"
-```
-
-5. Consume from Kafka:
+4. Consume from Kafka:
 
 ```bash
 docker exec -it kafka kafka-console-consumer \
@@ -64,5 +58,4 @@ docker logs connect --tail 100
 ## Notes
 
 - Use `connect/mqtt-source-sensors.docker.json` when Connect runs in Docker (uses `mosquitto:1883`).
-- Use `connect/mqtt-source-sensors.json` when Connect runs outside Docker (uses `localhost:1883`).
 - More context: `docs/mqtt-kafka-connect.md`.
