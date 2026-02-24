@@ -1,7 +1,9 @@
-fun main() {
+
+fun main(args: Array<String>) {
     ConsumerService(
-        "localhost:9092",
-        "mqtt.sensors.raw",
-        "mqtt-consumer-group"
+        bootstrapServers="localhost:9092",
+        topic="mqtt.sensors.raw",
+        groupId="mqtt-consumer-group",
+        mqttSubtopicFilter=args
     ).start()
 }

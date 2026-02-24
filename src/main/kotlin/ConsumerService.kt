@@ -9,12 +9,23 @@ import java.util.Properties
 class ConsumerService(
     private val bootstrapServers: String,
     private val topic: String,
-    private val groupId: String
+    private val groupId: String,
+    private val mqttSubtopicFilter: Array<String> = emptyArray()
 ) {
     private val logger = LoggerFactory.getLogger(ConsumerService::class.java)
 
     @Volatile
     private var running = true
+
+    internal fun consumerProperties(): Properties =
+        Properties().apply {
+            put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
+            put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
+            put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
+            put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
+            put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+            put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
+        }
 
     fun start() {
         KafkaConsumer<String, String>(consumerProperties()).use { consumer ->
@@ -26,16 +37,24 @@ class ConsumerService(
 
             consumer.subscribe(listOf(topic))
             logger.info(
-                "Consumer started. bootstrapServers={}, topic={}, groupId={}",
+                "Consumer started. bootstrapServers={}, topic={}, groupId={}, mqttSubtopicFilter={}",
                 bootstrapServers,
                 topic,
-                groupId
+                groupId,
+                mqttSubtopicFilter
             )
 
             try {
                 while (running) {
                     val records = consumer.poll(Duration.ofSeconds(1))
                     records.forEach { record ->
+                        if (
+                            mqttSubtopicFilter.isNotEmpty() &&
+                            !mqttSubtopicFilter.contains(record.key())
+                            ) {
+                            return@forEach
+                        }
+
                         logger.info(
                             "partition={}, offset={}, key={}, value={}",
                             record.partition(),
@@ -59,14 +78,4 @@ class ConsumerService(
             }
         }
     }
-
-    internal fun consumerProperties(): Properties =
-        Properties().apply {
-            put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
-            put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
-            put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
-            put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
-            put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-            put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
-        }
 }
