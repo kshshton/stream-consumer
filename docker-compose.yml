@@ -18,6 +18,8 @@
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    networks:
+      - iot-network
 
   connect:
     build:
@@ -28,6 +30,8 @@
       - kafka
     ports:
       - "8083:8083"
+    networks:
+      - iot-network
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka:29092
       CONNECT_REST_PORT: 8083
@@ -42,3 +46,7 @@
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
+
+networks:
+  iot-network:
+    name: iot-network

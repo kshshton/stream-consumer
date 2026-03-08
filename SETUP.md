@@ -8,13 +8,7 @@ Dockerized local stack for ingesting MQTT messages into Kafka via Kafka Connect.
 - Mosquitto (`eclipse-mosquitto:2`)
 - Kafka Connect (custom image with MQTT connector plugin)
 
-## Prerequisites
-
-- WSL2
-- Docker Desktop with WSL integration enabled
-- `curl`
-
-## Quick start (WSL2)
+## Quick start
 
 1. Start services:
 
