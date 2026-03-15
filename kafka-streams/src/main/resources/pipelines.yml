@@ -1,0 +1,22 @@
+pipelines:
+  - id: sensor-default
+    inputTopic: iot.sensors.raw
+    outputTopic: iot.sensors.processed
+    dlqTopic: iot.sensors.dlq
+    validRange:
+      min: -100.0
+      max: 500.0
+    expectedRange:
+      min: -60.0
+      max: 300.0
+
+  - id: sensor-aux
+    inputTopic: iot.sensors.raw2
+    outputTopic: iot.sensors.processed2
+    dlqTopic: iot.sensors.dlq2
+    validRange:
+      min: -20.0
+      max: 120.0
+    expectedRange:
+      min: 0.0
+      max: 100.0

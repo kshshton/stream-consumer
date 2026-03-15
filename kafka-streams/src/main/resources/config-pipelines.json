@@ -1,0 +1,61 @@
+{
+  "app": {
+    "id": "sensor-stream-service-config",
+    "bootstrap_servers": "localhost:9092"
+  },
+  "pipelines": [
+    {
+      "name": "temperature-monitor",
+      "sensor_id": "temp-01",
+      "input_topic": "iot.temperature.raw",
+      "output_topic": "iot.temperature.processed",
+      "error_topic": "iot.temperature.errors",
+      "validation": {
+        "min_value": -100.0,
+        "max_value": 500.0,
+        "allowed_units": ["C", "F"]
+      },
+      "processing": [
+        {
+          "type": "unit_conversion",
+          "from_unit": "F",
+          "to_unit": "C",
+          "factor": 0.555555,
+          "offset": -17.777777
+        },
+        {
+          "type": "threshold_tag",
+          "threshold": 80.0,
+          "operator": "gt",
+          "tag": "OVERHEAT"
+        }
+      ]
+    },
+    {
+      "name": "pressure-monitor",
+      "sensor_id": "press-02",
+      "input_topic": "iot.pressure.raw",
+      "output_topic": "iot.pressure.processed",
+      "error_topic": "iot.pressure.errors",
+      "validation": {
+        "min_value": 0.0,
+        "max_value": 150.0,
+        "allowed_units": ["PSI", "BAR"]
+      },
+      "processing": [
+        {
+          "type": "unit_conversion",
+          "from_unit": "PSI",
+          "to_unit": "BAR",
+          "factor": 0.068947
+        },
+        {
+          "type": "threshold_tag",
+          "threshold": 10.0,
+          "operator": "gt",
+          "tag": "HIGH_PRESSURE"
+        }
+      ]
+    }
+  ]
+}

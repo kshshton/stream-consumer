@@ -1,0 +1,11 @@
+app:
+  name: sensor-stream-service
+
+kafka:
+  streams:
+    application-id: sensor-stream-service
+    bootstrap-servers: localhost:9092
+  topics:
+    input: iot.sensors.raw
+    output: iot.sensors.processed
+    dead-letter: iot.sensors.dlq
