@@ -1,0 +1,45 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+)
+
+func main() {
+	// 1. Define the message handler (what happens when a message arrives)
+	var messageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+		fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
+	}
+
+	// 2. Configure the client options
+	opts := mqtt.NewClientOptions()
+	opts.AddBroker("tcp://broker.hivemq.com:1883") // Public test broker
+	opts.SetClientID("go_mqtt_client")
+	opts.SetDefaultPublishHandler(messageHandler)
+
+	// 3. Create and connect the client
+	client := mqtt.NewClient(opts)
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		panic(token.Error())
+	}
+
+	// 4. Subscribe to a topic
+	topic := "fedora/test/topic"
+	if token := client.Subscribe(topic, 1, nil); token.Wait() && token.Error() != nil {
+		fmt.Println(token.Error())
+		os.Exit(1)
+	}
+
+	fmt.Printf("Subscribed to %s. Press Ctrl+C to exit.\n", topic)
+
+	// 5. Keep the program running until interrupted
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+	<-sigChan
+
+	client.Disconnect(250)
+}
