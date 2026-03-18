@@ -12,11 +12,12 @@ import (
 )
 
 func main() {
-	mySensorBuffer := &processor.MessageBuffer{}
+	// mySensorBuffer := &processor.MessageBuffer{}
 
 	var messageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+		processor.Deserializer(msg)
 		// fmt.Printf("Received message: %s from topic %s\n", msg.Payload(), msg.Topic())
-		fmt.Println(mySensorBuffer.Retention(msg, "pms5003", 2))
+		// fmt.Println(mySensorBuffer.Retention(msg, "pms5003", 2))
 	}
 
 	opts := options.Connect(&messageHandler)
