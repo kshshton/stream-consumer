@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-server/internal/options"
 	"go-server/internal/processor"
+	"go-server/internal/sensors"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,9 +15,34 @@ import (
 func main() {
 	// mySensorBuffer := &processor.MessageBuffer{}
 
+	sen0441Ch := sensors.Registry["sen0441"].Channel
+	scd41Ch := sensors.Registry["scd41"].Channel
+	pms5003Ch := sensors.Registry["pms5003"].Channel
+	ens160Ch := sensors.Registry["ens160"].Channel
+	bme280Ch := sensors.Registry["bme280"].Channel
+	ds18b20Ch := sensors.Registry["ds18b20"].Channel
+
+	go func() {
+		for {
+			select {
+			case data := <-sen0441Ch:
+				fmt.Printf("sen0441: %v", data)
+			case data := <-scd41Ch:
+				fmt.Printf("scd41Ch: %v", data)
+			case data := <-pms5003Ch:
+				fmt.Printf("pms5003Ch: %v", data)
+			case data := <-ens160Ch:
+				fmt.Printf("ens160Ch: %v", data)
+			case data := <-bme280Ch:
+				fmt.Printf("bme280Ch: %v", data)
+			case data := <-ds18b20Ch:
+				fmt.Printf("ds18b20Ch: %v", data)
+			}
+		}
+	}()
+
 	var messageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 		processor.Deserializer(msg)
-		// fmt.Printf("Received message: %s from topic %s\n", msg.Payload(), msg.Topic())
 		// fmt.Println(mySensorBuffer.Retention(msg, "pms5003", 2))
 	}
 
