@@ -17,7 +17,7 @@ type MessageBuffer struct {
 	Data []Message
 }
 
-func (mb *MessageBuffer) Retention(msg mqtt.Message, topic string, capacity int8) []Message {
+func (mb *MessageBuffer) Retention(msg mqtt.Message, topic string, messageCapacity int8) []Message {
 	mb.Lock()
 	defer mb.Unlock()
 
@@ -25,8 +25,8 @@ func (mb *MessageBuffer) Retention(msg mqtt.Message, topic string, capacity int8
 		return nil
 	}
 
-	if len(mb.Data) >= int(capacity) {
-		mb.Data = mb.Data[:0]
+	if len(mb.Data) >= int(messageCapacity) {
+		mb.Data = mb.Data[1:]
 	}
 
 	mb.Data = append(mb.Data, Message{Topic: msg.Topic(), Payload: msg.Payload()})
