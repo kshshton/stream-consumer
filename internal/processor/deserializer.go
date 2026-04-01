@@ -13,7 +13,7 @@ func Deserializer(msg mqtt.Message) {
 	var sensorName string
 
 	topicElements := strings.Split(msg.Topic(), "/")
-	if len(topicElements) > 1 {
+	if len(topicElements) == 3 {
 		sensorName = topicElements[1]
 	} else {
 		err := fmt.Errorf("Wrong format of topic: %s", msg.Topic())
