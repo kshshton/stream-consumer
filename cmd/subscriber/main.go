@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-server/internal/options"
+	"go-server/internal/config"
 	"go-server/internal/processor"
 	"go-server/internal/sensors"
 	"net/http"
@@ -65,7 +65,7 @@ func main() {
 		// fmt.Println(mySensorBuffer.Retention(msg, "pms5003", 2))
 	}
 
-	opts := options.Connect(&messageHandler)
+	opts := config.Connect(&messageHandler)
 
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
