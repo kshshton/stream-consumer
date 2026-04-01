@@ -19,8 +19,8 @@ var Registry = map[string]*SensorInfo{
 }
 
 func init() {
-	fmt.Print("Called init...")
 	for _, info := range Registry {
 		info.Channel = make(chan any, 10)
 	}
+	fmt.Println("Sensors are registered!")
 }

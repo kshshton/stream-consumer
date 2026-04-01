@@ -1,5 +1,6 @@
 package sensors
 
+// Type: Particulate Matter Sensor
 type PMS5003 struct {
 	SensorBase
 	Pm struct {

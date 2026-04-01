@@ -1,5 +1,6 @@
 package sensors
 
+// Type: Formaldehyde Sensor
 type SEN0441 struct {
 	SensorBase
 	HCHO struct {

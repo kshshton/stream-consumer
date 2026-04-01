@@ -1,5 +1,6 @@
 package sensors
 
+// Type: Environmental Sensor
 type BME280 struct {
 	SensorBase
 	Environment struct {

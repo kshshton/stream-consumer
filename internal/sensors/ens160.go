@@ -1,5 +1,6 @@
 package sensors
 
+// Type: Indoor Air Quality Sensor
 type ENS160 struct {
 	SensorBase
 	Iaq struct {

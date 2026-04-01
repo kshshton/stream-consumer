@@ -78,8 +78,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Subscribed to %s\n", topic)
-
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 	<-sigChan

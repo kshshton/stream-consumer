@@ -1,5 +1,6 @@
 package sensors
 
+// Type: Temperature Sensor
 type DS18B20 struct {
 	SensorBase
 	Temperature struct {

@@ -1,5 +1,6 @@
 package sensors
 
+// Type: Carbon dioxide Sensor
 type SCD41 struct {
 	SensorBase
 	CO2 struct {
