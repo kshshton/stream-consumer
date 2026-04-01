@@ -3,9 +3,20 @@ package sensors
 type BME280 struct {
 	SensorBase
 	Environment struct {
-		Temperature float32
-		Humidity    float32
-		Pressure    float32
+		Temperature struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"temperature"`
+
+		Humidity struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"humidity"`
+
+		Pressure struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"pressure"`
 	}
 }
 

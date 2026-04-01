@@ -2,7 +2,10 @@ package sensors
 
 type DS18B20 struct {
 	SensorBase
-	Temperature float32
+	Temperature struct {
+		Unit  string  `json:"unit"`
+		Value float32 `json:"value"`
+	} `json:"temperature"`
 }
 
 func (sensor DS18B20) Validate() error {

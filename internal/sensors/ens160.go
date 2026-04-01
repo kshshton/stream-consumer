@@ -3,10 +3,25 @@ package sensors
 type ENS160 struct {
 	SensorBase
 	Iaq struct {
-		VocIndex    int8
-		Eco2        int8
-		Temperature float32
-		Humidity    float32
+		VocIndex struct {
+			Unit  string `json:"unit"`
+			Value uint16 `json:"value"`
+		} `json:"vocIndex"`
+
+		Eco2 struct {
+			Unit  string `json:"unit"`
+			Value uint16 `json:"value"`
+		} `json:"eco2"`
+
+		Temperature struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"temperature"`
+
+		Humidity struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"humidity"`
 	}
 }
 

@@ -3,9 +3,20 @@ package sensors
 type SEN0441 struct {
 	SensorBase
 	HCHO struct {
-		PPM         float32
-		Temperature float32
-		Humidity    float32
+		PPM struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"ppm"`
+
+		Temperature struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"temperature"`
+
+		Humidity struct {
+			Unit  string  `json:"unit"`
+			Value float32 `json:"value"`
+		} `json:"humidity"`
 	}
 }
 
