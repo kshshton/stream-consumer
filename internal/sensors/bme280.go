@@ -8,3 +8,7 @@ type BME280 struct {
 		Pressure    float32
 	}
 }
+
+func (sensor BME280) Validate() error {
+	return nil
+}

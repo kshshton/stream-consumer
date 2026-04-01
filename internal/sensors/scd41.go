@@ -8,3 +8,7 @@ type SCD41 struct {
 		Humidity    float32
 	}
 }
+
+func (sensor SCD41) Validate() error {
+	return nil
+}

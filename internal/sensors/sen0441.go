@@ -8,3 +8,7 @@ type SEN0441 struct {
 		Humidity    float32
 	}
 }
+
+func (sensor SEN0441) Validate() error {
+	return nil
+}

@@ -7,3 +7,7 @@ type SensorBase struct {
 	Timestamp time.Time
 	Location  string
 }
+
+func (sensor SensorBase) Validate() error {
+	return nil
+}

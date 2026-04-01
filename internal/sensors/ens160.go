@@ -9,3 +9,7 @@ type ENS160 struct {
 		Humidity    float32
 	}
 }
+
+func (sensor ENS160) Validate() error {
+	return nil
+}

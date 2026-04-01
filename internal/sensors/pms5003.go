@@ -14,3 +14,7 @@ type PMS5003 struct {
 		Particles_10um  float32
 	}
 }
+
+func (sensor PMS5003) Validate() error {
+	return nil
+}
